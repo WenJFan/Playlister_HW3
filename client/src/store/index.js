@@ -60,7 +60,7 @@ export const useGlobalStore = () => {
             // CREATE A NEW LIST
             case GlobalStoreActionType.CREATE_NEW_LIST: {
                 return setStore({
-                    idNamePairs: store.idNamePairs,
+                    idNamePairs: payload.idNamePairs,
                     currentList: payload,
                     newListCounter: store.newListCounter + 1,
                     listNameActive: false
@@ -116,7 +116,7 @@ export const useGlobalStore = () => {
         async function asyncChangeListName(id) {
             let response = await api.getPlaylistById(id);
             if (response.data.success) {
-                let playlist = response.data.playist;
+                let playlist = response.data.playlist;
                 playlist.name = newName;
                 async function updateList(playlist) {
                     response = await api.updatePlaylistById(playlist._id, playlist);
@@ -141,6 +141,38 @@ export const useGlobalStore = () => {
             }
         }
         asyncChangeListName(id);
+    }
+
+    store.createNewList = function(){
+        async function asyncCreateList(){
+            let newList = {
+                name:"Untitled"+store.newListCounter,
+                songs: []
+            }
+            let response = await api.createPlaylist(newList);
+            if (response.data.success) {
+                let playlist = response.data.playlist;
+                async function getListPairs(playlist){
+                    response = await api.getPlaylistPairs();
+                    if (response.data.success){
+                        let pairsArray = response.data.idNamePairs;
+                        storeReducer({
+                            type: GlobalStoreActionType.CREATE_NEW_LIST,
+                            payload: {
+                                idNamePairs: pairsArray,
+                                playlist: playlist
+                            }
+                        });
+                    }   
+                }
+                getListPairs(playlist);
+            }
+        }
+        asyncCreateList();
+    }
+
+    store.setIsListNameEditActive = function(){
+
     }
 
     // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST
@@ -189,6 +221,7 @@ export const useGlobalStore = () => {
     store.getPlaylistSize = function() {
         return store.currentList.songs.length;
     }
+    
     store.undo = function () {
         tps.undoTransaction();
     }
