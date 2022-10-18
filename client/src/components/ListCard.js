@@ -47,14 +47,17 @@ function ListCard(props) {
     }
 
     function handleKeyPress(event) {
-        if (event.code === "Enter") {
+        if (event.code === "Enter"&&text!=event.target.defaultValue) {
             let id = event.target.id.substring("list-".length);
             store.changeListName(id, text);
             toggleEdit();
         }
+        else if(event.code === "Enter"&&text==event.target.defaultValue){
+            toggleEdit();
+        }
     }
     function handleUpdateText(event) {
-        setText(event.target.value );
+        setText(event.target.value);
     }
 
     let selectClass = "unselected-list-card";

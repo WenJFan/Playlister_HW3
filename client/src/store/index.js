@@ -47,7 +47,7 @@ export const useGlobalStore = () => {
             case GlobalStoreActionType.CHANGE_LIST_NAME: {
                 return setStore({
                     idNamePairs: payload.idNamePairs,
-                    currentList: payload.playlist,
+                    currentList: null,
                     newListCounter: store.newListCounter,
                     listNameActive: false
                 });
@@ -312,6 +312,30 @@ export const useGlobalStore = () => {
         modal.classList.remove("is-visible");
     }
 
+    store.addNewSong = function(){
+        let cur = store.currentList;
+        let currentId = store.currentList._id
+        let newSong = {
+            title:"Untitle",
+            artist:"Unknown",
+            youTubeId:"dQw4w9WgXcQ"
+        }  
+        cur.songs[store.getPlaylistSize()] = newSong;
+        async function asyncAddSong() {
+            let response = await api.updatePlaylistById(store.currentList._id, cur);;
+            if (response.data.success) {
+                storeReducer({
+                    type: GlobalStoreActionType.SET_CURRENT_LIST,
+                    payload: store.currentList
+                });
+                store.history.push("/playlist/" + currentId);
+                //store.setCurrentList(response.data.playlist._id);
+            }
+        }
+        asyncAddSong(currentId,cur);
+        
+    }
+    
     // THIS GIVES OUR STORE AND ITS REDUCER TO ANY COMPONENT THAT NEEDS IT
     return { store, storeReducer };
 }

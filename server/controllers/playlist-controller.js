@@ -90,6 +90,7 @@ updatePlaylistById = async (req, res) => {
     const body = req.body
     Playlist.findOne({ _id: req.params.id }, (err, list) => {
         list.name = body.name
+        list.songs=body.songs
         list
             .save()
             .then(() => {
