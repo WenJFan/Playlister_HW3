@@ -108,6 +108,15 @@ updatePlaylistById = async (req, res) => {
             })
     })
 }
+deletePlaylist = async (req, res) => {
+    await Playlist.deleteOne({ _id: req.params.id }, (err, list) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+
+        return res.status(200).json({ success: true, playlist: list })
+    }).catch(err => console.log(err))
+}
 
 
 module.exports = {
@@ -116,4 +125,5 @@ module.exports = {
     getPlaylistPairs,
     getPlaylistById,
     updatePlaylistById,
+    deletePlaylist,
 }
