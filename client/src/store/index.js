@@ -121,7 +121,7 @@ export const useGlobalStore = () => {
                 async function updateList(playlist) {
                     response = await api.updatePlaylistById(playlist._id, playlist);
                     if (response.data.success) {
-                        async function getListPairs(playlist) {
+                        async function getListPairs() {
                             response = await api.getPlaylistPairs();
                             if (response.data.success) {
                                 let pairsArray = response.data.idNamePairs;
@@ -169,10 +169,6 @@ export const useGlobalStore = () => {
             }
         }
         asyncCreateList();
-    }
-
-    store.setIsListNameEditActive = function(){
-
     }
 
     // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST

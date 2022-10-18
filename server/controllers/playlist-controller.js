@@ -86,10 +86,34 @@ getPlaylistPairs = async (req, res) => {
         }
     }).catch(err => console.log(err))
 }
+updatePlaylistById = async (req, res) => {
+    const body = req.body
+    Playlist.findOne({ _id: req.params.id }, (err, list) => {
+        list.name = body.name
+        list
+            .save()
+            .then(() => {
+                return res.status(200).json({
+                    success: true,
+                    playlist: list,
+                    message: 'Playlist Updated!',
+                })
+            })
+            .catch(error => {
+                return res.status(400).json({
+                    success: false,
+                    error,
+                    message: 'Playlist Not Updated!',
+                })
+            })
+    })
+}
+
 
 module.exports = {
     createPlaylist,
     getPlaylists,
     getPlaylistPairs,
-    getPlaylistById
+    getPlaylistById,
+    updatePlaylistById,
 }
