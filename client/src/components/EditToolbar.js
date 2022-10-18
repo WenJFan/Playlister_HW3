@@ -8,12 +8,13 @@ import { useHistory } from 'react-router-dom'
     @author McKilla Gorilla
 */
 function EditToolbar() {
+    
     const { store } = useContext(GlobalStoreContext);
     const history = useHistory();
 
     let enabledButtonClass = "playlister-button";
     function handleAdd(){
-        store.addNewSong();
+        store.addAddSongTransaction();
     }
     function handleUndo() {
         store.undo();

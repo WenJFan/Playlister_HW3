@@ -4,7 +4,7 @@ function DeleteSongModal() {
     let title = "aaa";
     const { store } = useContext(GlobalStoreContext);
     function handleDeleteSong(){
-        store.deleteSong(store.markSongForDeletionId)
+        store.addDeleteSongTransaction(store.markSongForDeletionId)
         store.hideDeleteSong()
     }
     function handleHideDeleteSong(){
@@ -45,4 +45,4 @@ function DeleteSongModal() {
     );
 }
 
-export default  DeleteSongModal;
+export default DeleteSongModal;
