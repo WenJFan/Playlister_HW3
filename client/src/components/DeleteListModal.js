@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { GlobalStoreContext } from '../store'
 function DeleteListModal() {
-    let text = "aaa";
+    let text = "";
     const { store } = useContext(GlobalStoreContext);
     function handleDeleteList(){
         store.deleteList(store.markListForDeletionId)

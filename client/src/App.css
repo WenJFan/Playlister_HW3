@@ -61,7 +61,9 @@ body {
   background-color: transparent;
   float:right;
 }
-
+.Playlister-selector{
+  font-size:36pt;
+}
 #playlist-selector, #playlist-cards {
   overflow: scroll;
   grid-column: 1 / 3;
@@ -90,7 +92,7 @@ body {
 }
 
 #playlister-statusbar {
-  position: absolute;
+  position :fixed ;
   left: 0%;
   top: 90%;
   width: 100%;
@@ -191,7 +193,7 @@ input {
  .modal-root > * {
   padding: 1rem;
  }
- 
+
 .modal-north {
   font-size:32pt;
   font-weight: bold;
@@ -206,7 +208,23 @@ input {
   gap: 10px 20px;
   font-size: 28pt;
  }
+
+ .editmode-center{
+  gap: 10px 20px;
+  display: flex;
+  flex-direction: column;
+  }
   
+ .editmode-centerT{
+  font-size: 20pt;
+ }
+ .editmode-centerA{
+  font-size: 20pt;
+ }
+ .editmode-centerI{
+  font-size: 20pt;
+ }
+
  span {
   font-weight: bold;
   font-style: italic;

@@ -25,6 +25,7 @@ export const GlobalStoreActionType = {
     MARK_LIST_FOR_DELETION: "MARK_LIST_FOR_DELETION",
     STORE: "STORE",
     DRAG: "DRAG",
+    MODAL:"MODAL",
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -39,6 +40,7 @@ export const useGlobalStore = () => {
         currentList: null,
         newListCounter: 0,
         listNameActive: false,
+        ModalOpen:false,
         markSongForEditionId:null,
         markSongForEdition: null,
         markSongForDeletion: null,
@@ -123,12 +125,28 @@ export const useGlobalStore = () => {
                     listNameActive: false
                 });
             }
+            case GlobalStoreActionType.MODAL:{
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    ModalOpen:payload.ModalOpen,
+                    markSongForEditionId:store.markSongForEditionId,
+                    markSongForEdition:store.markSongForEdition,
+                    markSongForDeletion:store.markSongForDeletion,
+                    markSongForDeletionId:store.markSongForDeletionId,
+                    markListForDeletionId: store.markListForDeletionId,
+                    markListForDeletion: store.markListForDeletion,
+                });
+            }
             case GlobalStoreActionType.STORE:{
                 return setStore({
                     idNamePairs: store.idNamePairs,
                     currentList: store.currentList,
                     newListCounter: store.newListCounter,
                     listNameActive: store.listNameActive,
+                    ModalOpen:payload.ModalOpen,
                     markSongForEditionId: payload.markSongForEditionId,
                     markSongForEdition: payload.markSongForEdition,
                     markSongForDeletion: payload.markSongForDeletion,
@@ -177,7 +195,21 @@ export const useGlobalStore = () => {
         }
         asyncChangeListName(id);
     }
-
+    store.canUndo = function(){
+        return (tps.hasTransactionToUndo()&&!store.ModalOpen);
+    }
+    store.canRedo = function(){
+        return (tps.hasTransactionToRedo()&&!store.ModalOpen);
+    }
+    store.canAddSong = function(){
+        return (store.currentList!==null&&!store.ModalOpen);
+    }
+    store.canClose = function(){
+        return (store.currentList!==null&&!store.ModalOpen);
+    }
+    store.canAddList = function(){
+        return (store.currentList==null&&!store.ModalOpen&&!store.listNameActive);
+    }
     store.deleteList = function(id){
         async function asyncDeleteList(id){
             let response = await api.getPlaylistById(id);
@@ -238,6 +270,7 @@ export const useGlobalStore = () => {
 
     // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST
     store.closeCurrentList = function () {
+        tps.clearAllTransactions();
         storeReducer({
             type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
             payload: {}
@@ -261,7 +294,6 @@ export const useGlobalStore = () => {
         }
         asyncLoadIdNamePairs();
     }
-
     store.setCurrentList = function (id) {
         async function asyncSetCurrentList(id) {
             let response = await api.getPlaylistById(id);
@@ -307,6 +339,7 @@ export const useGlobalStore = () => {
                     storeReducer({
                         type: GlobalStoreActionType.STORE,
                         payload: {
+                            ModalOpen:true,
                             markSongForEditionId:null,
                             markSongForEdition:null,
                             markSongForDeletion:null,
@@ -335,6 +368,10 @@ export const useGlobalStore = () => {
 
     store.hideDeleteList = function(){
         let modal = document.getElementById("delete-list-modal");
+        storeReducer({
+            type: GlobalStoreActionType.MODAL,
+            payload: {ModalOpen:false},
+        });
         modal.classList.remove("is-visible");
     }
 
@@ -342,6 +379,10 @@ export const useGlobalStore = () => {
 
     store.hideDeleteSong = function(){
         let modal = document.getElementById("delete-song-modal");
+        storeReducer({
+            type: GlobalStoreActionType.MODAL,
+            payload: {ModalOpen:false},
+        });
         modal.classList.remove("is-visible");
     }
     store.addAddSongTransaction = function(){
@@ -386,6 +427,7 @@ export const useGlobalStore = () => {
                     storeReducer({
                         type: GlobalStoreActionType.STORE,
                         payload: {
+                            ModalOpen:true,
                             markSongForEditionId:null,
                             markSongForEdition:null,
                             markSongForDeletion: deleteSong,
@@ -395,6 +437,7 @@ export const useGlobalStore = () => {
                     });
                     let modal = document.getElementById("delete-song-modal");
                     modal.classList.add("is-visible");
+                    
                 }
             }
         }
@@ -432,6 +475,7 @@ export const useGlobalStore = () => {
                     storeReducer({
                         type: GlobalStoreActionType.STORE,
                         payload: {
+                            ModalOpen:true,
                             markSongForEditionId: index,
                             markSongForEdition: editSong,
                             markSongForDeletion: null,
@@ -454,6 +498,10 @@ export const useGlobalStore = () => {
     }
     store.hideEditSong= function (){
         let modal = document.getElementById("edit-song-modal");
+        storeReducer({
+            type: GlobalStoreActionType.MODAL,
+            payload: {ModalOpen:false},
+        });
         modal.classList.remove("is-visible");
     }
     store.addEditSongTransaction = function(index,Ot,Nt,Oa,Na,Oi,Ni){

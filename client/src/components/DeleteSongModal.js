@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { GlobalStoreContext } from '../store'
 function DeleteSongModal() {
-    let title = "aaa";
+    let title = "";
     const { store } = useContext(GlobalStoreContext);
     function handleDeleteSong(){
         store.addDeleteSongTransaction(store.markSongForDeletionId)

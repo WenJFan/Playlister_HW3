@@ -1,13 +1,22 @@
 import { useContext } from 'react'
 import { GlobalStoreContext } from '../store'
 function EditSongModal() {
-    let title = "aaa";
+    let title = "";
     const { store } = useContext(GlobalStoreContext);
     function handleEditSong(){
         let newtitle = document.getElementById("text1").value;
         let newartist = document.getElementById("text2").value;
         let newid = document.getElementById("text3").value;
         let oldsong = store.markSongForEdition;
+        if (newtitle==""){
+            newtitle = "Untitle";
+        }
+        if (newartist==""){
+            newartist = "Unknown";
+        }
+        if (newid==""){
+            newid = "dQw4w9WgXcQ";
+        }
         store.addEditSongTransaction(store.markSongForEditionId,oldsong.title,newtitle,oldsong.artist,newartist,oldsong.yuTubeId,newid)
         store.hideEditSong()
     }

@@ -10,7 +10,9 @@ import { GlobalStoreContext } from '../store'
 const ListSelector = () => {
     const { store } = useContext(GlobalStoreContext);
     store.history = useHistory();
-
+    let canAddList = store.canAddList();
+    let addListClass = "playlister-button";
+    if (!canAddList) addListClass += " disabled";
     useEffect(() => {
         store.loadIdNamePairs();
     }, []);
@@ -31,14 +33,15 @@ const ListSelector = () => {
     return (
         <div id="playlist-selector">
             <div id="list-selector-list">
-            <div id="playlist-selector-heading">
+            <div id="playlist-selector-heading" >
                 <input
                     type="button"
                     id="add-list-button"
                     onClick={handleCreateNewList}
                     className="playlister-button"
-                    value="+" />
-                Your Lists
+                    value="+" 
+                    disabled={!canAddList}/>
+                <div id = "text" class = "Playlister-selector" >Your Lists</div>
             </div>                {
                     listCard
                 }

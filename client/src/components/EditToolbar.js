@@ -10,6 +10,20 @@ import { useHistory } from 'react-router-dom'
 function EditToolbar() {
     
     const { store } = useContext(GlobalStoreContext);
+    let canAddSong = store.canAddSong();//store.currentList !== null;
+    let canUndo = store.canUndo();
+    let canRedo = store.canRedo();
+    let canClose = store.canClose();//store.currentList !== null;
+    let addSongClass = "toolbar-button";
+    let undoClass = "toolbar-button";
+    let redoClass = "toolbar-button";
+    let closeClass = "toolbar-button";
+    if (!canAddSong) addSongClass += " disabled";
+    if (!canClose) closeClass += " disabled";
+    //if(!store.ModalOpen) addSongClass += " disabled";
+    if (!canUndo) undoClass += " disabled";
+    if (!canRedo) redoClass += " disabled";
+    
     const history = useHistory();
 
     let enabledButtonClass = "playlister-button";
@@ -35,7 +49,7 @@ function EditToolbar() {
             <input
                 type="button"
                 id='add-song-button'
-                disabled={editStatus}
+                disabled={!canAddSong}
                 value="+"
                 className={enabledButtonClass}
                 onClick={handleAdd}
@@ -43,7 +57,7 @@ function EditToolbar() {
             <input
                 type="button"
                 id='undo-button'
-                disabled={editStatus}
+                disabled={!canUndo}
                 value="⟲"
                 className={enabledButtonClass}
                 onClick={handleUndo}
@@ -51,7 +65,7 @@ function EditToolbar() {
             <input
                 type="button"
                 id='redo-button'
-                disabled={editStatus}
+                disabled={!canRedo}
                 value="⟳"
                 className={enabledButtonClass}
                 onClick={handleRedo}
@@ -59,7 +73,7 @@ function EditToolbar() {
             <input
                 type="button"
                 id='close-button'
-                disabled={editStatus}
+                disabled={!canClose}
                 value="&#x2715;"
                 className={enabledButtonClass}
                 onClick={handleClose}
